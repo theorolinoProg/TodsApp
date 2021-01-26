@@ -6,13 +6,13 @@ import 'package:intl/intl.dart';
 
 class TodsDetail extends StatefulWidget {
   final String appBarTitle;
-  final Tods todo;
+  final Tods tods;
 
-  TodsDetail(this.todo, this.appBarTitle);
+  TodsDetail(this.tods, this.appBarTitle);
 
   @override
   State<StatefulWidget> createState() {
-    return TodsDetailState(this.todo, this.appBarTitle);
+    return TodsDetailState(this.tods, this.appBarTitle);
   }
 }
 
@@ -20,19 +20,19 @@ class TodsDetailState extends State<TodsDetail> {
   DatabaseHelper helper = DatabaseHelper();
 
   String appBarTitle;
-  Tods todo;
+  Tods tods;
 
   TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
 
-  TodsDetailState(this.todo, this.appBarTitle);
+  TodsDetailState(this.tods, this.appBarTitle);
 
   @override
   Widget build(BuildContext context) {
     TextStyle textStyle = Theme.of(context).textTheme.title;
 
-    titleController.text = todo.title;
-    descriptionController.text = todo.description;
+    titleController.text = tods.title;
+    descriptionController.text = tods.description;
 
     return WillPopScope(
         onWillPop: () {
@@ -135,52 +135,52 @@ class TodsDetailState extends State<TodsDetail> {
     Navigator.pop(context, true);
   }
 
-  // Update the title of todo object
+  // Update the title of tods object
   void updateTitle() {
-    todo.title = titleController.text;
+    tods.title = titleController.text;
   }
 
-  // Update the description of todo object
+  // Update the description of tods object
   void updateDescription() {
-    todo.description = descriptionController.text;
+    tods.description = descriptionController.text;
   }
 
   // Save data to database
   void _save() async {
     moveToLastScreen();
 
-    todo.date = DateFormat.yMMMd().format(DateTime.now());
+    tods.date = DateFormat.yMMMd().format(DateTime.now());
     int result;
-    if (todo.id != null) {
+    if (tods.id != null) {
       // Case 1: Update operation
-      result = await helper.updateTodo(todo);
+      result = await helper.updateTods(tods);
     } else {
       // Case 2: Insert Operation
-      result = await helper.insertTodo(todo);
+      result = await helper.insertTods(tods);
     }
 
     if (result != 0) {
       // Success
-      _showAlertDialog('Status', 'Todo Saved Successfully');
+      _showAlertDialog('Status', 'Tods Saved Successfully');
     } else {
       // Failure
-      _showAlertDialog('Status', 'Problem Saving Todo');
+      _showAlertDialog('Status', 'Problem Saving Tods');
     }
   }
 
   void _delete() async {
     moveToLastScreen();
 
-    if (todo.id == null) {
-      _showAlertDialog('Status', 'No Todo was deleted');
+    if (tods.id == null) {
+      _showAlertDialog('Status', 'No Tods was deleted');
       return;
     }
 
-    int result = await helper.deleteTodo(todo.id);
+    int result = await helper.deleteTods(tods.id);
     if (result != 0) {
-      _showAlertDialog('Status', 'Todo Deleted Successfully');
+      _showAlertDialog('Status', 'Tods Deleted Successfully');
     } else {
-      _showAlertDialog('Status', 'Error Occured while Deleting Todo');
+      _showAlertDialog('Status', 'Error Occured while Deleting Tods');
     }
   }
 

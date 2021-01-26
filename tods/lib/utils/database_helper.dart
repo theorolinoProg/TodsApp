@@ -48,8 +48,8 @@ class DatabaseHelper {
         '$colDescription TEXT, $colDate TEXT)');
   }
 
-  // Fetch Operation: Get all todo objects from database
-  Future<List<Map<String, dynamic>>> getTodoMapList() async {
+  // Fetch Operation: Get all tods objects from database
+  Future<List<Map<String, dynamic>>> getTodsMapList() async {
     Database db = await this.database;
 
     //		var result = await db.rawQuery('SELECT * FROM $todoTable order by $colTitle ASC');
@@ -57,30 +57,30 @@ class DatabaseHelper {
     return result;
   }
 
-  // Insert Operation: Insert a todo object to database
-  Future<int> insertTodo(Tods todo) async {
+  // Insert Operation: Insert a tods object to database
+  Future<int> insertTods(Tods tods) async {
     Database db = await this.database;
-    var result = await db.insert(todoTable, todo.toMap());
+    var result = await db.insert(todoTable, tods.toMap());
     return result;
   }
 
-  // Update Operation: Update a todo object and save it to database
-  Future<int> updateTodo(Tods todo) async {
+  // Update Operation: Update a tods object and save it to database
+  Future<int> updateTods(Tods tods) async {
     var db = await this.database;
-    var result = await db.update(todoTable, todo.toMap(),
-        where: '$colId = ?', whereArgs: [todo.id]);
+    var result = await db.update(todoTable, tods.toMap(),
+        where: '$colId = ?', whereArgs: [tods.id]);
     return result;
   }
 
-  // Delete Operation: Delete a todo object from database
-  Future<int> deleteTodo(int id) async {
+  // Delete Operation: Delete a tods object from database
+  Future<int> deleteTods(int id) async {
     var db = await this.database;
     int result =
         await db.rawDelete('DELETE FROM $todoTable WHERE $colId = $id');
     return result;
   }
 
-  // Get number of todo objects in database
+  // Get number of tods objects in database
   Future<int> getCount() async {
     Database db = await this.database;
     List<Map<String, dynamic>> x =
@@ -89,14 +89,14 @@ class DatabaseHelper {
     return result;
   }
 
-  // Get the 'Map List' [ List<Map> ] and convert it to 'todo List' [ List<Todo> ]
-  Future<List<Tods>> getTodoList() async {
-    var todoMapList = await getTodoMapList(); // Get 'Map List' from database
+  // Get the 'Map List' [ List<Map> ] and convert it to 'tods List' [ List<Tods> ]
+  Future<List<Tods>> getTodsList() async {
+    var todoMapList = await getTodsMapList(); // Get 'Map List' from database
     int count =
         todoMapList.length; // Count the number of map entries in db table
 
     List<Tods> todoList = List<Tods>();
-    // For loop to create a 'todo List' from a 'Map List'
+    // For loop to create a 'tods List' from a 'Map List'
     for (int i = 0; i < count; i++) {
       todoList.add(Tods.fromMapObject(todoMapList[i]));
     }

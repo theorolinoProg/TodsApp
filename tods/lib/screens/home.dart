@@ -5,15 +5,14 @@ import 'package:tods/utils/database_helper.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:tods/screens/tods.dart';
 
-
-class TodoList extends StatefulWidget {
+class TodsList extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return TodoListState();
+    return TodsListState();
   }
 }
 
-class TodoListState extends State<TodoList> {
+class TodsListState extends State<TodsList> {
   DatabaseHelper databaseHelper = DatabaseHelper();
   List<Tods> todoList;
   int count = 0;
@@ -21,27 +20,27 @@ class TodoListState extends State<TodoList> {
   @override
   Widget build(BuildContext context) {
     if (todoList == null) {
-      todoList = List<Tods>();
+      todoList = <Tods>[];
       updateListView();
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Todos'),
+        title: Text('Todss'),
       ),
-      body: getTodoListView(),
+      body: getTodsListView(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           debugPrint('FAB clicked');
-          navigateToDetail(Tods('', '', ''), 'Add Todo');
+          navigateToDetail(Tods('', '', ''), 'Add Tods');
         },
-        tooltip: 'Add Todo',
+        tooltip: 'Add Tods',
         child: Icon(Icons.add),
       ),
     );
   }
 
-  ListView getTodoListView() {
+  ListView getTodsListView() {
     return ListView.builder(
       itemCount: count,
       itemBuilder: (BuildContext context, int position) {
@@ -50,7 +49,7 @@ class TodoListState extends State<TodoList> {
           elevation: 2.0,
           child: ListTile(
             leading: CircleAvatar(
-              backgroundColor: Colors.amber,
+              backgroundColor: Colors.grey[400],
               child: Text(getFirstLetter(this.todoList[position].title),
                   style: TextStyle(fontWeight: FontWeight.bold)),
             ),
@@ -63,7 +62,7 @@ class TodoListState extends State<TodoList> {
                 GestureDetector(
                   child: Icon(
                     Icons.delete,
-                    color: Colors.red,
+                    color: Colors.black,
                   ),
                   onTap: () {
                     _delete(context, todoList[position]);
@@ -73,7 +72,7 @@ class TodoListState extends State<TodoList> {
             ),
             onTap: () {
               debugPrint("ListTile Tapped");
-              navigateToDetail(this.todoList[position], 'Edit Todo');
+              navigateToDetail(this.todoList[position], 'Edit Tods');
             },
           ),
         );
@@ -85,23 +84,25 @@ class TodoListState extends State<TodoList> {
     return title.substring(0, 2);
   }
 
-  void _delete(BuildContext context, Tods todo) async {
-    int result = await databaseHelper.deleteTodo(todo.id);
+  void _delete(BuildContext context, Tods tods) async {
+    int result = await databaseHelper.deleteTods(tods.id);
     if (result != 0) {
-      _showSnackBar(context, 'Todo Deleted Successfully');
+      _showSnackBar(context, 'Tods Deleted Successfully');
       updateListView();
     }
   }
 
   void _showSnackBar(BuildContext context, String message) {
     final snackBar = SnackBar(content: Text(message));
-    Scaffold.of(context).showSnackBar(snackBar);
+    ScaffoldMessenger.of(context).showSnackBar(
+      snackBar,
+    );
   }
 
-  void navigateToDetail(Tods todo, String title) async {
+  void navigateToDetail(Tods tods, String title) async {
     bool result =
         await Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return TodsDetail(todo, title);
+      return TodsDetail(tods, title);
     }));
 
     if (result == true) {
@@ -112,7 +113,7 @@ class TodoListState extends State<TodoList> {
   void updateListView() {
     final Future<Database> dbFuture = databaseHelper.initializeDatabase();
     dbFuture.then((database) {
-      Future<List<Tods>> todoListFuture = databaseHelper.getTodoList();
+      Future<List<Tods>> todoListFuture = databaseHelper.getTodsList();
       todoListFuture.then((todoList) {
         setState(() {
           this.todoList = todoList;
