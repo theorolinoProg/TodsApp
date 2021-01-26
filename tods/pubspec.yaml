@@ -22,6 +22,8 @@ environment:
   flutter: '>=1.10.2-pre.54'
 
 dependencies:
+  path_provider: any
+  sqflite: any
   flutter:
     sdk: flutter
     
